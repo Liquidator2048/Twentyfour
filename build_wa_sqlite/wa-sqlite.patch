@@ -1,0 +1,35 @@
+diff --git a/Makefile b/Makefile
+index 97d1676..8e87010 100644
+--- a/Makefile
++++ b/Makefile
+@@ -92,7 +92,8 @@ WASQLITE_DEFINES ?= \
+ 	-DSQLITE_OMIT_PROGRESS_CALLBACK \
+ 	-DSQLITE_OMIT_SHARED_CACHE \
+ 	-DSQLITE_THREADSAFE=0 \
+-	-DSQLITE_USE_ALLOCA
++	-DSQLITE_USE_ALLOCA \
++	-DSQLITE_ENABLE_FTS5
+ 
+ # directories
+ .PHONY: all
+
+diff --git a/src/sqlite-api.js b/src/sqlite-api.js
+index 4afb905..10d8443 100644
+--- a/src/sqlite-api.js
++++ b/src/sqlite-api.js
+@@ -97,7 +97,6 @@ export function Factory(Module) {
+     const f = Module.cwrap(fname, ...decl('nnnnn:n'));
+     return function(stmt, i, value) {
+       verifyStatement(stmt);
+-      // @ts-ignore
+       const byteLength = value.byteLength ?? value.length;
+       const ptr = Module._sqlite3_malloc(byteLength);
+       Module.HEAP8.subarray(ptr).set(value);
+@@ -473,7 +472,6 @@ export function Factory(Module) {
+     const fname = 'sqlite3_result_blob';
+     const f = Module.cwrap(fname, ...decl('nnnn:n'));
+     return function(context, value) {
+-      // @ts-ignore
+       const byteLength = value.byteLength ?? value.length;
+       const ptr = Module._sqlite3_malloc(byteLength);
+       Module.HEAP8.subarray(ptr).set(value);
