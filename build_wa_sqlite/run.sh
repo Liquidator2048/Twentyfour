@@ -9,4 +9,3 @@ yarn install
 make cache/*
 make -j$(($(nproc) + 1)) || make
 cp dist/* "${OUTPUT_DIR}/"
-bash

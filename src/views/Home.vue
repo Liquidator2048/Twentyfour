@@ -49,7 +49,6 @@
 </template>
 
 <script lang='ts'>
-
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import * as SQLite from 'wa-sqlite';
 import SQLiteAsyncESMFactory from '../wa-sqlite/wa-sqlite-async.mjs';
@@ -71,10 +70,11 @@ export default class Home extends Vue {
   } = {
     prepared: null,
     str: null,
-    sql: `SELECT t.magnet, t.title, t.info, t.date
-          FROM torrents t
-          WHERE title MATCH @search
-             OR info MATCH @search
+    sql: `
+      SELECT t.magnet, t.title, t.info, t.date
+      FROM torrents t
+      WHERE title MATCH @search
+         OR info MATCH @search
     `,
     hasMore: false,
     columns: ['magnet', 'title', 'info', 'date'],
