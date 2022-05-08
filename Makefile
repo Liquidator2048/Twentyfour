@@ -5,7 +5,7 @@ SQLJS_CHECKOUT=a95a244a007c2c10435cb57633ab187e07fdd29f
 DEVCONTAINER_NAME=localhost/twentyfour/sql.js-build
 
 define build_container_run
-$(DOCKER) run --rm -ti -u "$(shell id -u):$(shell id -g)" -v "$(CURDIR)/$(1):/dist:Z" -w /dist $(DEVCONTAINER_NAME) bash -c '$(2)'
+$(DOCKER) run --rm -u "$(shell id -u):$(shell id -g)" -v "$(CURDIR)/$(1):/dist:Z" -w /dist $(DEVCONTAINER_NAME) bash -c '$(2)'
 endef
 
 
