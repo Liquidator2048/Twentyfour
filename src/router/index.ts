@@ -9,6 +9,11 @@ const routes: Array<RouteConfig> = [
         name: 'Home',
         component: () => import(/* webpackChunkName: "home" */ '../views/Home.vue'),
     },
+    {
+        path: '/advanced',
+        name: 'Advanced',
+        component: () => import(/* webpackChunkName: "advanced" */ '../views/Advanced.vue'),
+    },
 ];
 
 const router = new VueRouter({

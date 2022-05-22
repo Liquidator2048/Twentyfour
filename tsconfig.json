@@ -6,10 +6,13 @@
     "jsx": "preserve",
     "importHelpers": true,
     "moduleResolution": "node",
+    "isolatedModules": false,
     "experimentalDecorators": true,
     "skipLibCheck": true,
+    "allowJs": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
     "sourceMap": true,
     "baseUrl": ".",
     "types": [
@@ -25,7 +28,9 @@
       "esnext",
       "dom",
       "dom.iterable",
-      "scripthost"
+      "scripthost",
+      "es6",
+      "webworker"
     ]
   },
   "include": [

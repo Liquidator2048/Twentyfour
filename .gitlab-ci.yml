@@ -6,4 +6,7 @@ build:
   before_script:
     - apk add nodejs yarn git make
   script:
-    - make all
+    - make build
+  artifacts:
+    paths:
+      - dist

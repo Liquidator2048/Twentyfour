@@ -1,15 +1,12 @@
 import Vue from 'vue';
+import './plugins/bootstrap';
+import './plugins/vuex';
 import App from './App.vue';
 import './registerServiceWorker';
 import router from './router';
 import store from './store';
-import './plugins/bootstrap';
-import './plugins/ipfs';
-import './plugins/sqlite';
-
 
 Vue.config.productionTip = false;
-
 
 new Vue({
     router,

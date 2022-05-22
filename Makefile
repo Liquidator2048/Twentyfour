@@ -1,7 +1,7 @@
 YARN=yarn
 DOCKER=docker
 SQLJS_REPO=https://github.com/rhashimoto/wa-sqlite.git
-SQLJS_CHECKOUT=a95a244a007c2c10435cb57633ab187e07fdd29f
+SQLJS_CHECKOUT=f7c161d33d70713bb439f20017da5c02d0134637
 DEVCONTAINER_NAME=localhost/twentyfour/sql.js-build
 
 define build_container_run
@@ -39,7 +39,7 @@ src/wa-sqlite/wa-sqlite%: build/sql.js-update build_container
 sql.js: src/wa-sqlite/wa-sqlite.wasm src/wa-sqlite/wa-sqlite-async.mjs src/wa-sqlite/wa-sqlite-async.wasm src/wa-sqlite/wa-sqlite.mjs
 
 .PHONY: build
-build: sql.js
+build:
 	$(YARN) install
 	$(YARN) run build
 

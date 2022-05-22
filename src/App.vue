@@ -1,29 +1,40 @@
 <template>
-    <b-container id='app'>
-        <h1>Torrent search</h1>
-        <router-view />
-    </b-container>
+    <div id="app">
+        <b-navbar toggleable>
+            <b-navbar-toggle class="navbar-toggler" target="sidebar-variant">
+            </b-navbar-toggle>
+            <div class="text-center d-flex justify-content-start">
+                <img src="img/logo.svg" alt="Twentyfour" style="width: 3em" class="mx-2" />
+                <h1>Twenty four</h1>
+            </div>
+        </b-navbar>
+        <b-sidebar id="sidebar-variant" title="Settings" bg-variant="white" text-variant="dark" shadow>
+            <div class="px-3 py-2">
+                <app-settings></app-settings>
+            </div>
+        </b-sidebar>
+        <b-container fluid>
+            <router-view />
+        </b-container>
+    </div>
+
 </template>
 
-<style lang='scss'>
-#app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-}
+<script type='ts'>
+import { Component, Vue } from 'vue-property-decorator';
+import AppSettings from '@/components/AppSettings';
 
-#nav {
-    padding: 30px;
-
-    a {
-        font-weight: bold;
-        color: #2c3e50;
-
-        &.router-link-exact-active {
-            color: #42b983;
-        }
+@Component({
+    components: { AppSettings },
+})
+export default class App extends Vue {
+    async mounted() {
+        this.$root.$on('settingsChanged', async () => {
+            await this.$store.dispatch('computed/reset');
+        });
+        console.log('app mounted');
+        await this.$store.dispatch('computed/reset');
     }
 }
-</style>
+</script>
+

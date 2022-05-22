@@ -1,13 +1,11 @@
 create virtual table torrents using fts5
 (
     id,
-    magnet
-    UNINDEXED,
+    magnet UNINDEXED,
     title,
     info,
     cat_id,
-    'date'
-    UNINDEXED
+    'date' UNINDEXED
 );
 vacuum;
 pragma journal_mode = delete;
