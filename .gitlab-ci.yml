@@ -6,7 +6,12 @@ build:
   before_script:
     - apk add nodejs yarn git make
   script:
-    - make build
+    - make deploy
   artifacts:
     paths:
       - dist
+  cache:
+    key: node_modules
+    paths:
+      - node_modules/
+      - .yarn/

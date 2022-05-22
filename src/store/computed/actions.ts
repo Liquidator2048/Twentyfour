@@ -140,13 +140,16 @@ const actions: ActionTree<ComputedState, RootState> = {
             throw new Error('no db');
         }
         const categories: Category[] = [];
-        await state.SQLITE.exec(state.DB, `SELECT id, value
-                                           FROM categories`, (row, columns) => {
-            categories.push({
-                id: row[0] as number,
-                value: row[1] as string,
-            });
-        });
+        await state.SQLITE.exec(
+            state.DB,
+            `SELECT id, value FROM categories`,
+            (row) => {
+                categories.push({
+                    id: row[0] as number,
+                    value: row[1] as string,
+                });
+            },
+        );
         commit('CATEGORIES_set', categories);
     },
 

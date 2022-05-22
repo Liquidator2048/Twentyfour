@@ -20,7 +20,7 @@ function storeState(state: RootState): void {
 }
 
 function getVal<T extends keyof RootState>(name: string, defVal: RootState[T]): RootState[T] {
-    const state = getState(null as any);
+    const state = getState({ [name]: defVal } as RootState);
     if (!state)
         return defVal;
     if (typeof state[name] === 'undefined')

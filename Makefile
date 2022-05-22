@@ -1,8 +1,9 @@
-YARN=yarn
-DOCKER=docker
-SQLJS_REPO=https://github.com/rhashimoto/wa-sqlite.git
-SQLJS_CHECKOUT=f7c161d33d70713bb439f20017da5c02d0134637
-DEVCONTAINER_NAME=localhost/twentyfour/sql.js-build
+YARN?=yarn
+NODE?=node
+DOCKER?=docker
+SQLJS_REPO?=https://github.com/rhashimoto/wa-sqlite.git
+SQLJS_CHECKOUT?=f7c161d33d70713bb439f20017da5c02d0134637
+DEVCONTAINER_NAME?=localhost/twentyfour/sql.js-build
 
 define build_container_run
 $(DOCKER) run --rm -u "$(shell id -u):$(shell id -g)" -v "$(CURDIR)/$(1):/dist:Z" -w /dist $(DEVCONTAINER_NAME) bash -c '$(2)'
@@ -43,8 +44,13 @@ build:
 	$(YARN) install
 	$(YARN) run build
 
+IPFS_HTTP?=/ip4/127.0.0.1/tcp/5001
+IPFS_KEY_NAME?=twentyfour
+.PHONY: deploy
+deploy: build
+	$(NODE) deploy/deploy.remote.mjs
+
 .PHONY: all
-.PHONY: build
 all: build
 
 .PHONY: build_in_docker
