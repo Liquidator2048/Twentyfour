@@ -5,10 +5,9 @@
   "scripts": {
     "serve": "vue-cli-service serve --mode development",
     "build": "vue-cli-service build --mode production",
-    "build-watch": "VUE_APP_NO_MINIMIZE=yesplease vue-cli-service build --mode production --watch",
+    "build-test": "VUE_APP_NO_MINIMIZE=yesplease vue-cli-service build --no-clean",
     "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint",
-    "peer-id": "peer-id --help"
+    "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "bootstrap": "^4",

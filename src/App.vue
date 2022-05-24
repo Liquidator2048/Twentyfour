@@ -32,7 +32,6 @@ export default class App extends Vue {
         this.$root.$on('settingsChanged', async () => {
             await this.$store.dispatch('computed/reset');
         });
-        console.log('app mounted');
         await this.$store.dispatch('computed/reset');
     }
 }

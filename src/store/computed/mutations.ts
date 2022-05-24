@@ -1,5 +1,5 @@
 import { MutationTree } from 'vuex';
-import { Category, ComputedState, SearchResults } from '@/store/types';
+import { Category, ComputedState, SearchResults } from './types';
 import * as IPFSCore from 'ipfs-core';
 import * as IPFSHttpClient from 'ipfs-http-client';
 import Vue from 'vue';

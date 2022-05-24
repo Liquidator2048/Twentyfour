@@ -26,19 +26,4 @@ export interface Category {
     value: string
 }
 
-export interface ComputedState {
-    IPFS: IPFSCore.IPFS | IPFSHttpClient.IPFSHTTPClient | null;
-    IPFS_IS_HTTP: boolean;
-    SQLITE: SQLiteAPI | null;
-    DB: number | null;
-    SEARCH: {
-        prepared: { stmt: number, sql: number } | null,
-        str: number | null,
-        sql: string,
-        hasMore: boolean,
-        columns: string[]
-    };
-    SEARCH_RESULTS: { [key: string]: SQLiteCompatibleType }[];
-    SEARCHING: number;
-    CATEGORIES: Category[];
-}
+

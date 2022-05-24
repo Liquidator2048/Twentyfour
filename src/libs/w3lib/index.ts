@@ -46,7 +46,7 @@ class W3lib {
             });
         if (provider?.on)
             provider.on('chainChanged', (newChainId) => {
-                console.log('chainChanged', newChainId);
+                console.log('[libs/w3lib/index.ts] chainChanged', newChainId);
                 if (provider?.request)
                     provider?.request({
                         method: 'wallet_switchEthereumChain',

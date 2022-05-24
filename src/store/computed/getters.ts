@@ -1,5 +1,6 @@
 import { GetterTree } from 'vuex';
-import { Category, ComputedState, RootState } from '@/store/types';
+import { Category, ComputedState } from './types';
+import { RootState } from '../root/types';
 import w3lib from '@/libs/w3lib';
 
 const getters: GetterTree<ComputedState, RootState> = {

@@ -5,42 +5,57 @@ import { precacheAndRoute } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';
 import { CacheableResponsePlugin } from 'workbox-cacheable-response';
 
-let ipfs: IPFSCore.IPFS;
+let ipfs: Promise<IPFSCore.IPFS>;
 
 precacheAndRoute((self as any).__WB_MANIFEST);
 skipWaiting();
 clientsClaim();
 
-async function ipfsInit() {
+function ipfsInit(): void {
     if (!ipfs) {
-        console.log('[sw] ipfs creating ....');
-        ipfs = await IPFSCore.create();
+        console.log('[service-worker.ts] ipfs creating ....');
+        ipfs = IPFSCore.create();
     }
 }
 
+async function getIpfs(): Promise<IPFSCore.IPFS> {
+    ipfsInit();
+    return await ipfs;
+}
+
 async function getIpfsFile(ipfsPath: string): Promise<Uint8Array> {
-    const fileStat = await ipfs.files.stat(`${ipfsPath}`);
-    console.log('File stats', fileStat);
+    const fileStat = await (await getIpfs()).files.stat(`${ipfsPath}`);
+    console.debug('[service-worker.ts] IPFS file stats', fileStat);
     const fileSize = fileStat.size;
     let tmpSize = 0;
     const file = new Uint8Array(fileSize);
-    for await (const f of await ipfs.cat(ipfsPath)) {
+    for await (const f of await (await getIpfs()).cat(ipfsPath)) {
         file.set(f, tmpSize);
         tmpSize += f.length;
-        console.log(`${((tmpSize / fileSize) * 100).toFixed(2)}% ( ${tmpSize}/${fileSize} )`, f.length);
+        console.debug(`[service-worker.ts] ${fileStat} ${((tmpSize / fileSize) * 100).toFixed(2)}% ( ${tmpSize}/${fileSize} )`, f.length);
     }
     return file;
 }
 
 const initialize = (service: ServiceWorkerGlobalScope): void => {
     service.addEventListener('activate', async (event: ExtendableEvent) => {
-        console.log('[sw] activate', event);
-        await ipfsInit();
+        console.debug('[service-worker.ts] activate', event);
+        ipfsInit();
     });
-    service.addEventListener('install', async (event: ExtendableEvent) => {
-        console.log('[sw] install', event);
-        await service.skipWaiting();
+    /*
+    service.addEventListener('sync', async () => {
+        console.log('[service-worker.ts] sync - starting ipfs ...');
+        await getIpfs();
     });
+    service.addEventListener('periodicsync', async () => {
+        console.log('[service-worker.ts] periodicsync - starting ipfs ...');
+        await getIpfs();
+    });
+    service.addEventListener('push', async () => {
+        console.log('[service-worker.ts] push - starting ipfs ...');
+        await getIpfs();
+    });
+    */
 
     registerRoute(
         // Check to see if the request's destination is style for stylesheets, script for JavaScript, or worker for web worker
@@ -62,11 +77,10 @@ const initialize = (service: ServiceWorkerGlobalScope): void => {
         }),
     );
 
-    registerRoute((args) => console.log('[sw] request', args));
     registerRoute(
-        ({ url }) => (url.host == 'ipfs.io' && url.pathname.startsWith('/ipfs')),
+        ({ url }) => url.pathname.startsWith('/ipfs/'),
         async ({ request, url }) => {
-            console.log('[sw] ipfs.io', request);
+            console.debug('[service-worker.ts] ipfs.io', request);
             await ipfsInit();
             const response = await getIpfsFile(url.pathname);
             return new Response(response);

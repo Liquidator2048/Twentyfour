@@ -1,6 +1,18 @@
 <template>
     <div>
-        <b-container class="text-center">
+        <div class="text-center" v-if="LOADING">
+            <h3>Loading ...</h3>
+            <p v-if="ERROR_MESSAGE">{{ ERROR_MESSAGE }}</p>
+        </div>
+        <div class="text-center" v-else-if="HAS_ERROR">
+            <h3>Ops ... Something goes terribly wrong ...</h3>
+            <p>
+                <small v-if="ERROR_MESSAGE">{{ ERROR_MESSAGE }}</small>
+            </p>
+            <b-button @click="refresh" class="mx-1">Try again</b-button>
+            <b-button @click="reload" class="mx-1">Damn... reload!</b-button>
+        </div>
+        <b-container v-else class="text-center">
             <b-form-textarea
                 id="textarea"
                 v-model="sqlQuery"
@@ -9,19 +21,10 @@
                 max-rows="50"
             ></b-form-textarea>
             <b-button @click="backClicked" class="m-2">Back</b-button>
-            <b-button @click="executeQuery" class="m-2" variant="success" :disabled="SEARCHING">Execute</b-button>
-            <div v-if="LOADING">
-                <h3>Loading ...</h3>
-                <p v-if="ERROR_MESSAGE">{{ ERROR_MESSAGE }}</p>
-            </div>
-            <div v-else-if="HAS_ERROR">
-                <h3>Ops ... Something goes terribly wrong ...</h3>
-                <p>
-                    <small v-if="ERROR_MESSAGE">{{ ERROR_MESSAGE }}</small>
-                </p>
-                <b-button @click="refresh" class="mx-1">Try again</b-button>
-                <b-button @click="reload" class="mx-1">Damn... reload!</b-button>
-            </div>
+            <b-button @click="refresh" class="m-2" variant="outline-danger">Reset</b-button>
+            <b-button @click="executeQuery" class="m-2" variant="success" :disabled="SEARCHING || LOADING">
+                Execute
+            </b-button>
         </b-container>
         <div>
             <b-table :items="SEARCH_RESULTS">
@@ -64,7 +67,7 @@
 
 <script lang='ts'>
 import { Component, Vue } from 'vue-property-decorator';
-import { Category } from '@/store/types';
+import { Category } from '@/store/computed/types';
 
 @Component
 export default class Advanced extends Vue {
@@ -73,7 +76,16 @@ FROM torrents t
 WHERE title MATCH 'something'
 `;
 
-    async mounted() {
+    private created(): void {
+        console.log('[Advanced.ts] created');
+    }
+
+    private async mounted(): Promise<void> {
+        await this.$store.dispatch('computed/resetResults');
+    }
+
+    private async beforeDestroy(): Promise<void> {
+        console.log('[Advanced.ts] unmounting ...');
         await this.$store.dispatch('computed/resetResults');
     }
 
@@ -83,17 +95,11 @@ WHERE title MATCH 'something'
 
     public async refresh() {
         await this.$store.dispatch('computed/reset');
+        this.$store.commit('computed/SEARCHING_set', false);
+        this.$store.commit('computed/RESULTS_set', []);
     }
 
     public async executeQuery(): Promise<void> {
-        console.log(this.sqlQuery);
-        /*if (this.$store.state.computed.SQLITE && this.$store.state.computed.DB) {
-            const sqlite3: SQLiteAPI = this.$store.state.computed.SQLITE;
-            const db = this.$store.state.computed.DB;
-            await sqlite3.exec(db, this.sqlQuery, (row, columns) => {
-                console.log(row);
-            });
-        }*/
         await this.$store.dispatch('computed/executeQuery', this.sqlQuery);
     }
 

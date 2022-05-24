@@ -1,10 +1,11 @@
 import { ActionTree } from 'vuex';
-import { Category, ComputedState, RootState } from '@/store/types';
+import { Category, ComputedState } from './types';
 import * as IPFSCore from 'ipfs-core';
 import * as IPFSHttpClient from 'ipfs-http-client';
 import SQLiteAsyncESMFactory from '@/wa-sqlite/wa-sqlite-async.mjs';
 import * as SQLite from 'wa-sqlite';
 import { IpfsAsyncVFS } from '@/IpfsAsyncVFS';
+import { RootState } from '../root/types';
 
 const PAGE_SIZE = 20;
 
@@ -33,8 +34,6 @@ const actions: ActionTree<ComputedState, RootState> = {
     },
 
     async resetIPFS({ commit, state, rootState }) {
-        console.log('reset ipfs');
-
         if (state.IPFS && !state.IPFS_IS_HTTP) {
             try {
                 await state.IPFS.stop();
@@ -64,7 +63,6 @@ const actions: ActionTree<ComputedState, RootState> = {
     },
 
     async resetSqlite({ commit, state, dispatch }) {
-        console.log('reset sqlite');
         commit('SQLITE_Set', null);
         if (!state.IPFS) {
             throw new Error('no IPFS provider');
@@ -77,7 +75,6 @@ const actions: ActionTree<ComputedState, RootState> = {
     },
 
     async resetDbPath({ commit, state, getters }) {
-        console.log('reset db path');
         let dbpath = await getters.getDBPathfromWeb3;
         if (dbpath.startsWith('/ipns/')) {
             if (!state.IPFS) {
@@ -90,7 +87,6 @@ const actions: ActionTree<ComputedState, RootState> = {
     },
 
     async resetDb({ commit, state, rootState, dispatch }) {
-        console.log('reset db');
         commit('DB_Set', null);
 
         if (!state.SQLITE) {
@@ -159,12 +155,11 @@ const actions: ActionTree<ComputedState, RootState> = {
         if (!state.SQLITE) {
             throw new Error('no sqlite');
         }
-        await dispatch('prepareDb', search.sql);
-        if (state.SEARCH.prepared?.stmt == null) {
-            throw new Error('search engine not ready');
-        }
         try {
-
+            await dispatch('prepareDb', search.sql);
+            if (state.SEARCH.prepared?.stmt == null) {
+                throw new Error('search engine not ready');
+            }
             state.SQLITE.bind_collection(
                 state.SEARCH.prepared.stmt,
                 {
@@ -252,6 +247,8 @@ const actions: ActionTree<ComputedState, RootState> = {
 
     resetResults({ commit }) {
         commit('RESULTS_set', []);
+        commit('SEARCH_hasMore', false);
+        commit('SEARCHING_set', false);
     },
 };
 export default actions;

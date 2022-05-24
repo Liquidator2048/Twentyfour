@@ -86,7 +86,7 @@
 
 <script lang='ts'>
 import { Component, Vue } from 'vue-property-decorator';
-import { Category } from '@/store/types';
+import { Category } from '@/store/computed/types';
 
 const noCategory = { id: null, value: 'Category' };
 @Component

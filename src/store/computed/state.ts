@@ -1,4 +1,4 @@
-import { ComputedState } from '@/store/types';
+import { ComputedState } from './types';
 
 const state: ComputedState = {
     IPFS: null,

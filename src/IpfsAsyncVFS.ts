@@ -21,14 +21,14 @@ export class IpfsAsyncVFS extends MemoryAsyncVFS {
     xOpen(name: string | null, fileId: number, flags: number, pOutFlags: {
         set: (arg0: number) => void;
     }): number | Promise<number> {
-        console.log('IpfsAsyncVFS.xOpen', name, fileId, flags, pOutFlags);
+        console.log('[IpfsAsyncVFS.ts] xOpen', name, fileId, flags, pOutFlags);
         return this.handleAsync(async () => {
-            console.log('IpfsAsyncVFS.xOpen', fileId, 'handleAsync');
+            console.log('[IpfsAsyncVFS.ts] xOpen', fileId, 'handleAsync');
             if (!this._ipfs) {
-                console.log('IpfsAsyncVFS.xOpen', fileId, 'handleAsync - IPFS.create', IPFSCore.create);
+                console.log('[IpfsAsyncVFS.ts] xOpen', fileId, 'handleAsync - IPFS.create', IPFSCore.create);
                 this._ipfs = await IPFSCore.create();
             }
-            console.log('IpfsAsyncVFS.xOpen', fileId, 'handleAsync - getting stats');
+            console.log('[IpfsAsyncVFS.ts] xOpen', fileId, 'handleAsync - getting stats');
             const stat = await this._ipfs.files.stat(name as IPFSPath);
             this._files[fileId] = { name, stat };
             return VFS.SQLITE_OK;
@@ -40,7 +40,6 @@ export class IpfsAsyncVFS extends MemoryAsyncVFS {
         size: number;
         value: Int8Array;
     }, iOffset: number): number | Promise<number> {
-        //console.log('IpfsAsyncVFS.xRead', fileId, pData, iOffset);
         const offset = iOffset;
         const length = pData.size;
         return this.handleAsync(async () => {
